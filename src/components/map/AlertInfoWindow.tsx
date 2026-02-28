@@ -95,11 +95,11 @@ export default function AlertInfoWindow({ alert, onClose }: AlertInfoWindowProps
       onCloseClick={onClose}
       pixelOffset={[0, -25]}
     >
-      <div style={{ background: "#0F1117", color: "#fff", borderRadius: 12, padding: 0, minWidth: 300, maxWidth: 360, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.5)", border: "1px solid #2D3142" }}>
+      <div style={{ background: "#0F1117", color: "#fff", borderRadius: 12, padding: 0, minWidth: "min(300px, 80vw)", maxWidth: "min(360px, 90vw)", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.5)", border: "1px solid #2D3142" }}>
         {/* Severity top bar */}
         <div style={{ height: 4, background: config.barColor, width: "100%" }} />
 
-        <div style={{ padding: "16px 18px" }}>
+        <div style={{ padding: "12px 14px" }}>
           {/* Header row: severity + time */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
             <span style={{

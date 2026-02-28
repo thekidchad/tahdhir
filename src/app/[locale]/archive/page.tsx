@@ -40,11 +40,11 @@ export default function ArchivePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="mx-auto max-w-5xl px-4 py-8">
+      <div className="mx-auto max-w-5xl px-3 py-4 sm:px-4 sm:py-8">
         {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">{t("archive.title")}</h1>
+        <div className="mb-4 sm:mb-8 flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold">{t("archive.title")}</h1>
             <p className="text-text-muted text-sm mt-1">
               {totalCount} alerts total
             </p>
@@ -75,10 +75,10 @@ export default function ArchivePage() {
             {alerts.map((alert) => (
               <div
                 key={alert.id}
-                className="bg-card rounded-lg p-4 flex items-start gap-4 border border-border-subtle"
+                className="bg-card rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 border border-border-subtle"
               >
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
                     <Badge variant={alert.severity}>{alert.severity}</Badge>
                     <Badge variant={alert.status === "active" ? "active" : "expired"}>
                       {alert.status}

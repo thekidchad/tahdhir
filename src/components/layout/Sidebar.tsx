@@ -10,9 +10,10 @@ import { CitySearch } from "@/components/sidebar/CitySearch";
 
 interface SidebarProps {
   className?: string;
+  onClose?: () => void;
 }
 
-function Sidebar({ className }: SidebarProps) {
+function Sidebar({ className, onClose }: SidebarProps) {
   return (
     <aside
       className={cn(
@@ -31,7 +32,21 @@ function Sidebar({ className }: SidebarProps) {
             تحذير
           </span>
         </div>
-        <LanguageToggle />
+        <div className="flex items-center gap-2">
+          <LanguageToggle />
+          {/* Mobile close button */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="flex md:hidden items-center justify-center h-8 w-8 rounded-lg text-text-muted hover:text-white transition-colors"
+              aria-label="Close menu"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
 
       <Clock />

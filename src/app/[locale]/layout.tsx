@@ -19,6 +19,13 @@ export const metadata = {
     "Real-time alert and early warning platform for the UAE, providing live threat monitoring, geolocation-based alerts, and emergency notifications.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export default async function LocaleLayout({
   children,
   params,

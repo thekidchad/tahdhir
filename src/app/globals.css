@@ -36,6 +36,27 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+
+/* Prevent iOS zoom on inputs */
+@media (max-width: 767px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Google Maps InfoWindow mobile fix */
+@media (max-width: 767px) {
+  .gm-style-iw {
+    max-width: 90vw !important;
+  }
+  .gm-style-iw-d {
+    max-width: 90vw !important;
+    overflow: auto !important;
+  }
 }
 
 @keyframes pulse-alert {

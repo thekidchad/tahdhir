@@ -1,0 +1,49 @@
+{
+  "header": {
+    "title": "Tahdhir",
+    "titleAr": "تحذير",
+    "subtitle": "Real-Time Alert System"
+  },
+  "sidebar": {
+    "alertsTitle": "Alerts in the last 24 hours",
+    "fullArchive": "Full archive",
+    "clearAll": "Clear all",
+    "searchCity": "Search city name...",
+    "readCityNames": "Read city names (English)",
+    "readCityNamesDesc": "Alerts will read the names of the cities",
+    "alertSound": "Alert sound",
+    "testSound": "Test",
+    "desktopNotifications": "Desktop notifications",
+    "desktopNotificationsDesc": "Show notifications on the desktop, or while browsing other tabs",
+    "noAlerts": "No alerts in the last 24 hours",
+    "alertsInfo": "Alerts will be received for the entire country.",
+    "alertsFilter": "You can receive alerts only for specific cities, by adding them to the list through the search box above."
+  },
+  "alert": {
+    "critical": "Critical",
+    "warning": "Warning",
+    "info": "Info",
+    "active": "Active",
+    "expired": "Expired",
+    "resolved": "Resolved",
+    "minutesAgo": "{count} min ago",
+    "hoursAgo": "{count}h ago",
+    "justNow": "Just now"
+  },
+  "sounds": {
+    "siren": "Siren",
+    "bell": "Bell",
+    "chime": "Chime",
+    "none": "None"
+  },
+  "archive": {
+    "title": "Alert Archive",
+    "noAlerts": "No alerts found",
+    "back": "Back to dashboard"
+  },
+  "map": {
+    "affectedArea": "Affected area",
+    "source": "Source",
+    "detectedAt": "Detected at"
+  }
+}

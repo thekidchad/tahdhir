@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/scrape-twitter",
+      "schedule": "*/2 * * * *"
+    },
+    {
+      "path": "/api/cron/scrape-news",
+      "schedule": "*/5 * * * *"
+    }
+  ]
+}

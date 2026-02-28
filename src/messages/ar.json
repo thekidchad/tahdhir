@@ -1,0 +1,49 @@
+{
+  "header": {
+    "title": "تحذير",
+    "titleAr": "Tahdhir",
+    "subtitle": "نظام الإنذار المبكر"
+  },
+  "sidebar": {
+    "alertsTitle": "التنبيهات في آخر 24 ساعة",
+    "fullArchive": "الأرشيف الكامل",
+    "clearAll": "مسح الكل",
+    "searchCity": "ابحث عن مدينة...",
+    "readCityNames": "قراءة أسماء المدن (عربي)",
+    "readCityNamesDesc": "سيتم قراءة أسماء المدن المتأثرة",
+    "alertSound": "صوت التنبيه",
+    "testSound": "اختبار",
+    "desktopNotifications": "إشعارات سطح المكتب",
+    "desktopNotificationsDesc": "إظهار الإشعارات على سطح المكتب أو أثناء تصفح علامات تبويب أخرى",
+    "noAlerts": "لا توجد تنبيهات في آخر 24 ساعة",
+    "alertsInfo": "سيتم استقبال التنبيهات لجميع أنحاء الدولة.",
+    "alertsFilter": "يمكنك استقبال التنبيهات لمدن محددة فقط عن طريق إضافتها من خلال مربع البحث أعلاه."
+  },
+  "alert": {
+    "critical": "حرج",
+    "warning": "تحذير",
+    "info": "معلومات",
+    "active": "نشط",
+    "expired": "منتهي",
+    "resolved": "تم الحل",
+    "minutesAgo": "منذ {count} دقيقة",
+    "hoursAgo": "منذ {count} ساعة",
+    "justNow": "الآن"
+  },
+  "sounds": {
+    "siren": "صافرة إنذار",
+    "bell": "جرس",
+    "chime": "رنين",
+    "none": "بدون صوت"
+  },
+  "archive": {
+    "title": "أرشيف التنبيهات",
+    "noAlerts": "لم يتم العثور على تنبيهات",
+    "back": "العودة إلى لوحة المعلومات"
+  },
+  "map": {
+    "affectedArea": "المنطقة المتأثرة",
+    "source": "المصدر",
+    "detectedAt": "تم الكشف في"
+  }
+}

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/server";
-import { scrapeRecentTweets } from "@/lib/twitter/scraper";
-import { parseWithLLM } from "@/lib/news/llm-parser";
+import { searchAlerts } from "@/lib/news/llm-parser";
 import { resolveLocation } from "@/lib/geo/geocode";
 
 export async function GET(request: Request) {
@@ -13,26 +12,32 @@ export async function GET(request: Request) {
   const supabase = createServiceClient();
 
   try {
-    const tweets = await scrapeRecentTweets();
+    const alerts = await searchAlerts();
     let alertsCreated = 0;
 
-    for (const tweet of tweets) {
-      const { data: existing } = await supabase
-        .from("processed_tweets")
-        .select("tweet_id")
-        .eq("tweet_id", tweet.id)
-        .single();
+    for (const parsed of alerts) {
+      // Dedup by source_url if available, or by title
+      if (parsed.source_url) {
+        const { data: existing } = await supabase
+          .from("alerts")
+          .select("id")
+          .eq("source_url", parsed.source_url)
+          .single();
 
-      if (existing) continue;
+        if (existing) continue;
+      } else {
+        const { data: existing } = await supabase
+          .from("alerts")
+          .select("id")
+          .eq("title_en", parsed.title_en)
+          .gte(
+            "detected_at",
+            new Date(Date.now() - 60 * 60 * 1000).toISOString()
+          )
+          .single();
 
-      const parsed = await parseWithLLM(tweet.text);
-
-      await supabase.from("processed_tweets").insert({
-        tweet_id: tweet.id,
-        is_alert: parsed?.is_alert ?? false,
-      });
-
-      if (!parsed || !parsed.is_alert) continue;
+        if (existing) continue;
+      }
 
       let lat = 25.2048;
       let lng = 55.2708;
@@ -58,10 +63,12 @@ export async function GET(request: Request) {
           lat,
           lng,
           radius_km: parsed.severity === "critical" ? 10 : 5,
-          source_url: tweet.url,
-          source_text: tweet.text,
+          source_url: parsed.source_url ?? null,
+          source_text: parsed.title_en,
           detected_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          expires_at: new Date(
+            Date.now() + 24 * 60 * 60 * 1000
+          ).toISOString(),
         })
         .select()
         .single();
@@ -91,11 +98,11 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       success: true,
-      tweetsScraped: tweets.length,
+      alertsFound: alerts.length,
       alertsCreated,
     });
   } catch (error) {
-    console.error("Twitter scrape error:", error);
+    console.error("Alert search error:", error);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 }

@@ -1,43 +1,56 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { ParsedAlert } from "@/types/alert";
 
-const SYSTEM_PROMPT = `You are a security alert parser for the UAE/Dubai region. Given text (from a news article or social media post), determine if it describes an ACTIVE, CURRENT attack, missile strike, drone threat, explosion, or security incident in the UAE/Dubai area.
+const SEARCH_PROMPT = `You are a real-time security monitoring system for the UAE region. Search the web right now for any ACTIVE or VERY RECENT (last 30 minutes) security incidents in the United Arab Emirates.
 
-IMPORTANT: Only classify as an alert if the text describes a CURRENT or VERY RECENT event (not historical, not opinion, not political commentary).
+Search for: missile attacks, drone strikes, rocket attacks, explosions, military threats, air defense activations, siren alerts, or any armed conflict events in or targeting the UAE (Dubai, Abu Dhabi, Sharjah, Ajman, Umm Al Quwain, Ras Al Khaimah, Fujairah).
 
-Respond with a JSON object only, no other text:
+IMPORTANT:
+- Only report CURRENT or VERY RECENT events (happening now or in the last 30 minutes)
+- Do NOT report historical events, political commentary, military deals, or defense exercises
+- Do NOT report events from other countries unless they directly target the UAE
+- If there are NO current security incidents in the UAE, return an empty array
 
-If it IS a genuine current alert:
-{
-  "is_alert": true,
-  "severity": "critical" | "warning" | "info",
-  "event_type": "missile" | "drone" | "rocket" | "explosion" | "threat" | "other",
-  "title_en": "Brief alert title in English",
-  "title_ar": "Brief alert title in Arabic",
-  "description_en": "1-2 sentence summary in English",
-  "description_ar": "1-2 sentence summary in Arabic",
-  "locations": [
-    {
-      "name_en": "Location name in English",
-      "name_ar": "Location name in Arabic",
-      "type": "city" | "district" | "landmark" | "address"
-    }
-  ]
-}
+Respond with a JSON array only, no other text:
 
-If it is NOT a genuine alert:
-{ "is_alert": false }
+If there ARE active alerts:
+[
+  {
+    "is_alert": true,
+    "severity": "critical" | "warning" | "info",
+    "event_type": "missile" | "drone" | "rocket" | "explosion" | "threat" | "other",
+    "title_en": "Brief alert title in English",
+    "title_ar": "Brief alert title in Arabic",
+    "description_en": "1-2 sentence summary in English",
+    "description_ar": "1-2 sentence summary in Arabic",
+    "source_url": "URL of the news source",
+    "locations": [
+      {
+        "name_en": "Location name in English",
+        "name_ar": "Location name in Arabic",
+        "type": "city" | "district" | "landmark" | "address"
+      }
+    ]
+  }
+]
+
+If there are NO current alerts:
+[]
 
 Severity guide:
 - "critical": Active missile strike, rocket attack, confirmed explosion with casualties
 - "warning": Drone sighting, unconfirmed threat, siren activation
 - "info": Threat assessment, security advisory, elevated alert level`;
 
-export async function parseWithLLM(text: string): Promise<ParsedAlert | null> {
+export interface SearchedAlert extends ParsedAlert {
+  source_url?: string;
+}
+
+export async function searchAlerts(): Promise<SearchedAlert[]> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    console.warn("No GEMINI_API_KEY set, skipping LLM parsing");
-    return null;
+    console.warn("No GEMINI_API_KEY set, skipping alert search");
+    return [];
   }
 
   const genAI = new GoogleGenerativeAI(apiKey);
@@ -47,21 +60,18 @@ export async function parseWithLLM(text: string): Promise<ParsedAlert | null> {
       responseMimeType: "application/json",
       temperature: 0.1,
     },
+    tools: [{ googleSearch: {} } as never],
   });
 
   try {
-    const result = await model.generateContent([
-      { text: SYSTEM_PROMPT },
-      { text: `Analyze this text and determine if it's a genuine security alert for the UAE/Dubai region:\n\n${text}` },
-    ]);
-
+    const result = await model.generateContent(SEARCH_PROMPT);
     const response = result.response.text();
     const parsed = JSON.parse(response);
-    if (!parsed.is_alert) return null;
 
-    return parsed as ParsedAlert;
+    const alerts: SearchedAlert[] = Array.isArray(parsed) ? parsed : [];
+    return alerts.filter((a) => a.is_alert);
   } catch (error) {
-    console.error("Gemini parsing error:", error);
-    return null;
+    console.error("Gemini search error:", error);
+    return [];
   }
 }

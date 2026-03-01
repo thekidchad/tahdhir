@@ -57,7 +57,6 @@ export async function searchAlerts(): Promise<SearchedAlert[]> {
   const model = genAI.getGenerativeModel({
     model: "gemini-2.0-flash",
     generationConfig: {
-      responseMimeType: "application/json",
       temperature: 0.1,
     },
     tools: [{ googleSearch: {} } as never],
@@ -66,8 +65,12 @@ export async function searchAlerts(): Promise<SearchedAlert[]> {
   try {
     const result = await model.generateContent(SEARCH_PROMPT);
     const response = result.response.text();
-    const parsed = JSON.parse(response);
 
+    // Extract JSON from response (may be wrapped in ```json ... ```)
+    const jsonMatch = response.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) return [];
+
+    const parsed = JSON.parse(jsonMatch[0]);
     const alerts: SearchedAlert[] = Array.isArray(parsed) ? parsed : [];
     return alerts.filter((a) => a.is_alert);
   } catch (error) {
